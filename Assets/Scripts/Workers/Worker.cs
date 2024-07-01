@@ -1,16 +1,17 @@
 using System;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class Worker : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private WorkersPlace _workersPlace;
     [SerializeField] private Base _base;
     [SerializeField] private Animator _animator;
+    [SerializeField] private AudioPlayer _audio;
+    [SerializeField] private IkResourceHandler _ikResourceHandler;
 
     private float _rotationSpeed = 15f;
-    private AudioSource _audio;
+    private float _distanceTolerance = 0.01f;
     private Resource _carryingResource;
     private Vector3 _target;
     private Vector3 _idlePlace;
@@ -18,11 +19,6 @@ public class Worker : MonoBehaviour
     public event Action<Worker, Resource> OnResourceDelivered;
 
     public int IsRunning { get; } = Animator.StringToHash(nameof(IsRunning));
-
-    private void Awake()
-    {
-        _audio = GetComponent<AudioSource>();
-    }
 
     private void Start()
     {
@@ -32,7 +28,7 @@ public class Worker : MonoBehaviour
 
     private void Update()
     {
-        if (_target.x != transform.position.x && _target.z != transform.position.z)
+        if (Vector3.Distance(transform.position, _target) > _distanceTolerance)
         {
             transform.position = Vector3.MoveTowards(transform.position, _target, _speed * Time.deltaTime);
             Vector3 lookDirection = _target - transform.position;
@@ -48,22 +44,29 @@ public class Worker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Resource resource) && resource.transform.position == _target)
+        if (other.TryGetComponent(out Resource resource) && Vector3.Distance(resource.transform.position, _target) < _distanceTolerance)
         {
-            _audio.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
-            _audio.PlayOneShot(resource.CollectedSoundEffect);
-            resource.GetCollected();
-            _carryingResource = resource;
-            
+            CollectResource(resource);
+
             _target = _base.transform.position;
         }
 
         if (other.TryGetComponent(out Base _) && _carryingResource != null)
         {
             _target = _idlePlace;
+            _ikResourceHandler.DropResource();
+            _carryingResource.BeCollected();
             OnResourceDelivered?.Invoke(this, _carryingResource);
             _carryingResource = null;
         }
+    }
+
+    private void CollectResource(Resource resource)
+    {
+        _audio.PlayClip(resource.CollectedSoundEffect);
+        _carryingResource = resource;
+        _ikResourceHandler.GrabResource(_carryingResource);
+        _carryingResource.BeCarried(this);
     }
 
     public void GoForResource(Resource resource)

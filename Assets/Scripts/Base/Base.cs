@@ -2,24 +2,22 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class Base : MonoBehaviour
 {
     [SerializeField] private ResourceScaner _scaner;
     [SerializeField] private Worker[] _workers;
+    [SerializeField] private AudioPlayer _audio;
 
-    private AudioSource _audio;
     private Queue<Resource> _resourcesToCollect = new Queue<Resource>();
     private Queue<Worker> _freeWorkers;
 
-    public event Action<Resource> OnResourceCollected;
+    public event Action OnWoodCollected;
 
     public int WoodCount { get; private set; } = 0;
     public int WorkerCount => _freeWorkers.Count;
 
     private void Awake()
     {
-        _audio = GetComponent<AudioSource>();
         _freeWorkers = new Queue<Worker>(_workers);
     }
 
@@ -41,19 +39,12 @@ public class Base : MonoBehaviour
 
     private void GetResource(Worker worker, Resource resource)
     {
-        FreeWorker(worker);
+        ReleaseWorker(worker);
 
-        switch (resource)
-        {
-            case Wood:
-                WoodCount++;
-                break;
-        }
+        _audio.PlayClip(resource.CarriedSoundEffect);
 
-        _audio.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
-        _audio.PlayOneShot(resource.CarriedSoundEffect);
-
-        OnResourceCollected?.Invoke(resource);
+        WoodCount++;
+        OnWoodCollected?.Invoke();
 
         if (_resourcesToCollect.Count > 0)
             SendWorkerForResource();
@@ -72,7 +63,7 @@ public class Base : MonoBehaviour
         _freeWorkers.Dequeue().GoForResource(_resourcesToCollect.Dequeue());
     }
 
-    private void FreeWorker(Worker worker)
+    private void ReleaseWorker(Worker worker)
     {
         _freeWorkers.Enqueue(worker);
     }

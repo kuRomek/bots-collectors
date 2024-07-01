@@ -16,6 +16,8 @@ public class ObjectPool<Type> : MonoBehaviour where Type : PooledObject
         else
             newObject = _pool.Dequeue();
 
+        newObject.transform.rotation = Quaternion.identity;
+
         return newObject;
     }
 

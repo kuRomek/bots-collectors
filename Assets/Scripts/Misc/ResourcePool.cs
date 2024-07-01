@@ -4,14 +4,14 @@
     {
         Resource resource = base.Get();
         resource.gameObject.SetActive(true);
-        resource.OnResourcePickedUp += Release;
+        resource.OnDelivered += Release;
 
         return resource;
     }
 
     public override void Release(Resource resource)
     {
-        resource.OnResourcePickedUp -= Release;
+        resource.OnDelivered -= Release;
         base.Release(resource);
     }
 }
