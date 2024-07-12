@@ -5,8 +5,8 @@ public class AudioPlayer : MonoBehaviour
 {
     private AudioSource _audioSource;
 
-    private float _minPitch = 0.8f;
-    private float _maxPitch = 1.2f;
+    private float _minPitch = 0.9f;
+    private float _maxPitch = 1.1f;
 
     private void Awake()
     {

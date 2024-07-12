@@ -8,12 +8,12 @@ public class ResourcesView : MonoBehaviour
 
     private void OnEnable()
     {
-        _base.OnWoodCollected += UpdateWoodCount;
+        _base.OnWoodCountChanged += UpdateWoodCount;
     }
 
     private void OnDisable()
     {
-        _base.OnWoodCollected -= UpdateWoodCount;
+        _base.OnWoodCountChanged -= UpdateWoodCount;
     }
 
     private void UpdateWoodCount()

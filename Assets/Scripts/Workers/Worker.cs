@@ -1,63 +1,87 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Worker : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-    [SerializeField] private WorkersPlace _workersPlace;
-    [SerializeField] private Base _base;
+    [SerializeField] private Base _homeBase;
+    [SerializeField] private AudioClip _constructionSound;
     [SerializeField] private Animator _animator;
     [SerializeField] private AudioPlayer _audio;
     [SerializeField] private IkResourceHandler _ikResourceHandler;
+    [SerializeField] private NavMeshAgent _navMeshAgent;
 
-    private float _rotationSpeed = 15f;
-    private float _distanceTolerance = 0.01f;
     private Resource _carryingResource;
-    private Vector3 _target;
     private Vector3 _idlePlace;
+    private bool _isBuilding = false;
 
     public event Action<Worker, Resource> OnResourceDelivered;
+    public event Action OnBaseBuilding;
 
+    protected float DistanceTolerance { get; private set; } = 0.001f;
     public int IsRunning { get; } = Animator.StringToHash(nameof(IsRunning));
 
     private void Start()
     {
-        _idlePlace = _workersPlace.TakeSpot();
-        _target = _idlePlace;
+        _navMeshAgent.SetDestination(_idlePlace);
+    }
+
+    private void OnEnable()
+    {
+        _homeBase.WorkersPlace.OnSpotsCalculated += TakeSpot;
+    }
+
+    private void OnDisable()
+    {
+        _homeBase.WorkersPlace.OnSpotsCalculated -= TakeSpot;
     }
 
     private void Update()
     {
-        if (Vector3.Distance(transform.position, _target) > _distanceTolerance)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, _target, _speed * Time.deltaTime);
-            Vector3 lookDirection = _target - transform.position;
-            lookDirection.y = 0f;
-            transform.forward = Vector3.MoveTowards(transform.forward, lookDirection, _rotationSpeed * Time.deltaTime);
-            _animator.SetBool(IsRunning, true);
-        }
-        else
-        {
+        if (Vector3.SqrMagnitude(_navMeshAgent.destination - transform.position) < DistanceTolerance)
             _animator.SetBool(IsRunning, false);
-        }
+        else
+            _animator.SetBool(IsRunning, true);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Resource resource) && Vector3.Distance(resource.transform.position, _target) < _distanceTolerance)
+        if (other.TryGetComponent(out Resource resource) && Vector3.SqrMagnitude(_navMeshAgent.destination - resource.transform.position) < DistanceTolerance)
         {
             CollectResource(resource);
 
-            _target = _base.transform.position;
+            _navMeshAgent.SetDestination(_homeBase.transform.position);
         }
+    }
 
-        if (other.TryGetComponent(out Base _) && _carryingResource != null)
+    private void OnTriggerStay(Collider other)
+    {
+        if (_carryingResource != null && other.TryGetComponent(out Base @base) && @base == _homeBase)
         {
-            _target = _idlePlace;
+            _navMeshAgent.SetDestination(_idlePlace);
             _ikResourceHandler.DropResource();
-            _carryingResource.BeCollected();
+            _carryingResource.Collect();
             OnResourceDelivered?.Invoke(this, _carryingResource);
             _carryingResource = null;
+        }
+
+        if (other.TryGetComponent(out Flag flag) && Vector3.SqrMagnitude(_navMeshAgent.destination - flag.transform.position) < DistanceTolerance)
+            BuildBase();
+    }
+
+    private void TakeSpot()
+    {
+        if (_isBuilding == false)
+        {
+            if (Vector3.SqrMagnitude(_navMeshAgent.destination - _idlePlace) < DistanceTolerance)
+            {
+                _idlePlace = _homeBase.WorkersPlace.TakeSpot();
+                _navMeshAgent.SetDestination(_idlePlace);
+            }
+            else
+            {
+                _idlePlace = _homeBase.WorkersPlace.TakeSpot();
+            }
         }
     }
 
@@ -66,11 +90,48 @@ public class Worker : MonoBehaviour
         _audio.PlayClip(resource.CollectedSoundEffect);
         _carryingResource = resource;
         _ikResourceHandler.GrabResource(_carryingResource);
-        _carryingResource.BeCarried(this);
+        _carryingResource.Carry(this);
     }
 
     public void GoForResource(Resource resource)
     {
-        _target = resource.transform.position;
+        _navMeshAgent.SetDestination(resource.transform.position);
+    }
+
+    public void GoBuildBase(Vector3 point)
+    {
+        _isBuilding = true;
+        _navMeshAgent.SetDestination(point);
+    }
+
+    public void CancelBuilding()
+    {
+        _isBuilding = false;
+        _navMeshAgent.SetDestination(_idlePlace);
+    }
+
+    private void BuildBase()
+    {
+        gameObject.SetActive(false);
+
+        OnBaseBuilding?.Invoke();
+        _homeBase.SelectionEffects.RemoveOutline();
+        _homeBase = Instantiate(_homeBase, transform.position, Quaternion.identity);
+        _homeBase.Reset();
+        _homeBase.SetBuildingState();
+        _homeBase.AudioSource.PlayOneShot(_constructionSound);
+
+        _homeBase.ProgressBar.BeginMaking(ProgressBar.Mode.Building, _homeBase.BuildingDuration);
+        _homeBase.ProgressBar.Progressing.onComplete += FinishBuilding;
+    }
+
+    private void FinishBuilding()
+    {
+        _homeBase.ProgressBar.Progressing.onComplete -= FinishBuilding;
+        _homeBase.SetBuiltState();
+        _isBuilding = false;
+        transform.position = _homeBase.Flag.transform.position;
+        gameObject.SetActive(true);
+        _homeBase.AddWorker(this);
     }
 }

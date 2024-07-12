@@ -12,6 +12,7 @@
     public override void Release(Resource resource)
     {
         resource.OnDelivered -= Release;
+        resource.gameObject.SetActive(false);
         base.Release(resource);
     }
 }

@@ -4,11 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class ResourcesSpawner : MonoBehaviour
 {
+    [SerializeField] private float _minTimeToSpawn;
+    [SerializeField] private float _maxTimeToSpawn;
+    [SerializeField] private float _spawnAcceleration;
     [SerializeField] private ResourcePool _pool;
 
     private Collider _spawnField;
-    private float _minTimeToSpawn = 1;
-    private float _maxTimeToSpawn = 4;
 
     private void Awake()
     {
@@ -20,6 +21,12 @@ public class ResourcesSpawner : MonoBehaviour
         StartCoroutine(BeginSpawning());
     }
 
+    private void Update()
+    {
+        _minTimeToSpawn -= _spawnAcceleration * Time.deltaTime;
+        _maxTimeToSpawn -= _spawnAcceleration * Time.deltaTime;
+    }
+
     private IEnumerator BeginSpawning()
     {
         bool isRunning = true;
@@ -29,11 +36,33 @@ public class ResourcesSpawner : MonoBehaviour
             yield return new WaitForSeconds(Random.Range(_minTimeToSpawn, _maxTimeToSpawn));
 
             Resource resource = _pool.Get();
+            Vector3 spawnPoint;
+            Collider[] hits;
 
-            float xPosition = Mathf.Pow(-1, Random.Range(0, 2)) * Random.Range(2f, _spawnField.bounds.max.x);
-            float zPosition = Mathf.Pow(-1, Random.Range(0, 2)) * Random.Range(2f, _spawnField.bounds.max.z);
+            bool containsBase;
 
-            resource.transform.position = new Vector3(xPosition, 0f, zPosition);
+            do
+            {
+                spawnPoint = new Vector3(Random.Range(_spawnField.bounds.min.x, _spawnField.bounds.max.z),
+                                         0f,
+                                         Random.Range(_spawnField.bounds.min.x, _spawnField.bounds.max.z));
+
+                hits = Physics.OverlapSphere(spawnPoint, 1f);
+
+                containsBase = false;
+
+                foreach (Collider hit in hits)
+                {
+                    if (hit.TryGetComponent(out Base _))
+                    {
+                        containsBase = true;
+                        break;
+                    }
+                }
+            }
+            while (containsBase);
+            
+            resource.transform.position = spawnPoint;
         }
     }
 }

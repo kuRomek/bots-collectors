@@ -1,34 +1,46 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Animator), typeof(Collider))]
 public abstract class Resource : PooledObject
 {
+    [SerializeField] private ResourceDistributor _distributor;
     [SerializeField] private AudioClip[] _collectedSoundEffects;
-    [SerializeField] private AudioClip _carriedSoundEffect;
-    [SerializeField] public Transform _rightHandle;
-    [SerializeField] public Transform _leftHandle;
+    [SerializeField] private AudioClip _deliveredSoundEffect;
+    [SerializeField] private Transform _rightHandle;
+    [SerializeField] private Transform _leftHandle;
+    [SerializeField] private Outline _outline;
 
     private Animator _animator;
     private Worker _worker;
     private float _workerOffset = 0.15f;
+    private Coroutine _waitingForScaners;
 
     public event Action<Resource> OnDelivered;
 
     public AudioClip CollectedSoundEffect => _collectedSoundEffects[UnityEngine.Random.Range(0, _collectedSoundEffects.Length - 1)];
-    public AudioClip CarriedSoundEffect => _carriedSoundEffect;
+    public AudioClip DeliveredSoundEffect => _deliveredSoundEffect;
     public Transform RightHandle => _rightHandle;
     public Transform LeftHandle => _leftHandle;
+    public Collider Collider { get; private set; }
     public int IsStopped { get; } = Animator.StringToHash(nameof(IsStopped));
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+        Collider = GetComponent<Collider>();
     }
 
     private void OnEnable()
     {
         _animator.SetBool(IsStopped, false);
+        _outline.enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        _waitingForScaners = null;
     }
 
     private void Update()
@@ -43,17 +55,30 @@ public abstract class Resource : PooledObject
         }
     }
 
-    public void BeCarried(Worker worker)
+    public void Carry(Worker worker)
     {
         _worker = worker;
         _animator.SetBool(IsStopped, true);
         transform.up = Vector3.forward;
+        _outline.enabled = false;
     }
 
-    public void BeCollected()
+    public void Collect()
     {
         OnDelivered?.Invoke(this);
         _worker = null;
-        gameObject.SetActive(false);
+    }
+
+    public void Detect(ResourceScaner scaner)
+    {
+        _distributor.AddScaner(scaner);
+        _waitingForScaners ??= StartCoroutine(WaitForScaners());
+    }
+
+    private IEnumerator WaitForScaners()
+    {
+        yield return new WaitForFixedUpdate();
+
+        _distributor.CalculateClosestScaner(this);
     }
 }
