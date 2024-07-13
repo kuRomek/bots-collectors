@@ -619,23 +619,15 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 266939337436800184, guid: ea62f6ddbf2f02c4aa1bcd7b84aa1bb5, type: 3}
+      propertyPath: _audioGeneral
+      value: 
+      objectReference: {fileID: 8819124072292184030}
     - target: {fileID: 2553649248091272616, guid: ea62f6ddbf2f02c4aa1bcd7b84aa1bb5, type: 3}
       propertyPath: m_Name
       value: Base
       objectReference: {fileID: 0}
     - target: {fileID: 2813650683539218002, guid: ea62f6ddbf2f02c4aa1bcd7b84aa1bb5, type: 3}
-      propertyPath: _audioPlayer
-      value: 
-      objectReference: {fileID: 8819124072292184030}
-    - target: {fileID: 2813650683539218002, guid: ea62f6ddbf2f02c4aa1bcd7b84aa1bb5, type: 3}
-      propertyPath: _audioGeneral
-      value: 
-      objectReference: {fileID: 8819124072292184030}
-    - target: {fileID: 5925876319276840812, guid: ea62f6ddbf2f02c4aa1bcd7b84aa1bb5, type: 3}
-      propertyPath: _distributor
-      value: 
-      objectReference: {fileID: 1571250112}
-    - target: {fileID: 5925876319276840812, guid: ea62f6ddbf2f02c4aa1bcd7b84aa1bb5, type: 3}
       propertyPath: _audioGeneral
       value: 
       objectReference: {fileID: 8819124072292184030}

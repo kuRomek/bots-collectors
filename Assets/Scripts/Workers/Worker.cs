@@ -118,20 +118,20 @@ public class Worker : MonoBehaviour
         _homeBase.SelectionEffects.RemoveOutline();
         _homeBase = Instantiate(_homeBase, transform.position, Quaternion.identity);
         _homeBase.Reset();
-        _homeBase.SetBuildingState();
+        _homeBase.BuildingLogic.SetBuildingState();
         _homeBase.AudioSource.PlayOneShot(_constructionSound);
 
-        _homeBase.ProgressBar.BeginMaking(ProgressBar.Mode.Building, _homeBase.BuildingDuration);
+        _homeBase.ProgressBar.BeginMaking(ProgressBar.Mode.Building, _homeBase.BuildingLogic.BuildingDuration);
         _homeBase.ProgressBar.Progressing.onComplete += FinishBuilding;
     }
 
     private void FinishBuilding()
     {
         _homeBase.ProgressBar.Progressing.onComplete -= FinishBuilding;
-        _homeBase.SetBuiltState();
+        _homeBase.BuildingLogic.SetBuiltState();
         _isBuilding = false;
         transform.position = _homeBase.Flag.transform.position;
         gameObject.SetActive(true);
-        _homeBase.AddWorker(this);
+        _homeBase.WorkersBehavior.AddWorker(this);
     }
 }

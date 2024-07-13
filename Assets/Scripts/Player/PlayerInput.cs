@@ -77,7 +77,7 @@ public class PlayerInput : MonoBehaviour
         _selectedBase.Flag.Reset();
 
         if (_selectedBase.HasBuilder)
-            _selectedBase.CancelBuilding();
+            _selectedBase.WorkersBehavior.CancelBuilding();
 
         _highlightedBase = null;
     }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ResourceDistributor : MonoBehaviour
 {
     private List<ResourceScaner> _scaners = new List<ResourceScaner>();
-
-    public event Action<Base, Resource> OnResourceDistributed;
 
     public void AddScaner(ResourceScaner scaner)
     {
@@ -31,7 +28,7 @@ public class ResourceDistributor : MonoBehaviour
             }
         }
 
-        OnResourceDistributed?.Invoke(closestScaner.GetComponentInParent<Base>(), resource);
+        closestScaner.GetComponentInParent<Base>().ResourceDistributor.AddResourceToQueue(resource);
 
         _scaners.Clear();
     }

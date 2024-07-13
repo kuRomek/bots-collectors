@@ -21,12 +21,12 @@ public class WorkersPlace : MonoBehaviour
 
     private void OnEnable()
     {
-        _base.OnWorkerCountChanged += CalculateSpots;
+        _base.WorkersBehavior.WorkerCountChanged += CalculateSpots;
     }
 
     private void OnDisable()
     {
-        _base.OnWorkerCountChanged -= CalculateSpots;
+        _base.WorkersBehavior.WorkerCountChanged -= CalculateSpots;
     }
 
     private void CalculateSpots()

@@ -2017,6 +2017,9 @@ GameObject:
   - component: {fileID: 56436429023169417}
   - component: {fileID: 5925876319276840812}
   - component: {fileID: 4421016336417292202}
+  - component: {fileID: 2333572903957906802}
+  - component: {fileID: 4923091793405477271}
+  - component: {fileID: 266939337436800184}
   - component: {fileID: 7668339121753000650}
   m_Layer: 0
   m_Name: Base
@@ -2204,19 +2207,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30ae12d946d0639448cbef87179be044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxWorkers: 7
-  _startWorkerCount: 3
-  _woodCount: 0
-  _buildingCost: 10
-  _buildingDuration: 7
+  _baseResourceDistributor: {fileID: 266939337436800184}
+  _buildingLogic: {fileID: 2333572903957906802}
+  _workersBehavior: {fileID: 4923091793405477271}
   _workersPlace: {fileID: 8304412727652277470}
   _flag: {fileID: 2813650683539218002}
-  _distributor: {fileID: 0}
   _selectionEffects: {fileID: 7249430216726418634}
-  _audioGeneral: {fileID: 0}
   _progressBar: {fileID: 8312711814389827809}
   _model: {fileID: 9120206988942363421}
-  _underConstructionMaterial: {fileID: 2100000, guid: 4232853359b41644f8a8ed1db3691660, type: 2}
 --- !u!114 &4421016336417292202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2230,9 +2228,53 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _makingTime: 3
-  _makingCost: 5
+  _makingCost: 3
   _base: {fileID: 5925876319276840812}
   _worker: {fileID: 6707560478270957272}
+--- !u!114 &2333572903957906802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2553649248091272616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25268ecba89d5fb4fb7fe4a9a607f078, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _underConstructionMaterial: {fileID: 2100000, guid: 4232853359b41644f8a8ed1db3691660, type: 2}
+  _buildingCost: 5
+  _buildingDuration: 5
+--- !u!114 &4923091793405477271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2553649248091272616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6fbeaa849360ce478645d101c0c059f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxWorkers: 7
+  _startWorkerCount: 3
+  _workerMaker: {fileID: 4421016336417292202}
+  _buildingLogic: {fileID: 2333572903957906802}
+--- !u!114 &266939337436800184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2553649248091272616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aab7420603d86c4fb62d4e9235a2503, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioGeneral: {fileID: 0}
 --- !u!208 &7668339121753000650
 NavMeshObstacle:
   m_ObjectHideFlags: 0
