@@ -17,7 +17,7 @@ public abstract class Resource : PooledObject
     private float _workerOffset = 0.15f;
     private Coroutine _waitingForScaners;
 
-    public event Action<Resource> OnDelivered;
+    public event Action<Resource> Delivered;
 
     public AudioClip CollectedSoundEffect => _collectedSoundEffects[UnityEngine.Random.Range(0, _collectedSoundEffects.Length - 1)];
     public AudioClip DeliveredSoundEffect => _deliveredSoundEffect;
@@ -65,7 +65,7 @@ public abstract class Resource : PooledObject
 
     public void Collect()
     {
-        OnDelivered?.Invoke(this);
+        Delivered?.Invoke(this);
         _worker = null;
     }
 

@@ -36,16 +36,16 @@ public class Base : MonoBehaviour
 
     private void OnEnable()
     {
-        _flag.OnInstalled += WorkersBehavior.SendWorkerForBuilding;
-        _flag.OnRemove += WorkersBehavior.PrepareWorker;
-        _workerMaker.OnWorkerMade += WorkersBehavior.AddWorker;
+        _flag.Installed += WorkersBehavior.SendWorkerForBuilding;
+        _flag.Removed += WorkersBehavior.PrepareWorker;
+        _workerMaker.WorkerMade += WorkersBehavior.AddWorker;
     }
 
     private void OnDisable()
     {
-        _flag.OnInstalled -= WorkersBehavior.SendWorkerForBuilding;
-        _flag.OnRemove -= WorkersBehavior.PrepareWorker;
-        _workerMaker.OnWorkerMade -= WorkersBehavior.AddWorker;
+        _flag.Installed -= WorkersBehavior.SendWorkerForBuilding;
+        _flag.Removed -= WorkersBehavior.PrepareWorker;
+        _workerMaker.WorkerMade -= WorkersBehavior.AddWorker;
     }
 
     public void Reset()

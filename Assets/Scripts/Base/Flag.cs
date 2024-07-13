@@ -12,8 +12,8 @@ public class Flag : MonoBehaviour
 
     private float _groundOffset = 0.01f;
 
-    public event Action OnInstalled;
-    public event Action OnRemove;
+    public event Action Installed;
+    public event Action Removed;
 
     public Vector3 DefaultPosition { get; private set; }
     public bool HasBeenInstalled { get; private set; } = false;
@@ -51,14 +51,14 @@ public class Flag : MonoBehaviour
         _renderer.material = _potentialMaterial;
 
         if (HasBeenInstalled)
-            OnRemove?.Invoke();
+            Removed?.Invoke();
     }
 
     public void Install()
     {
         _renderer.material = _installedMaterial;
         HasBeenInstalled = true;
-        OnInstalled?.Invoke();
+        Installed?.Invoke();
         _audioGeneral.PlayClip(_installedSoundEffect);
     }
 

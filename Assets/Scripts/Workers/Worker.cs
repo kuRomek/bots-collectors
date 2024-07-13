@@ -28,12 +28,12 @@ public class Worker : MonoBehaviour
 
     private void OnEnable()
     {
-        _homeBase.WorkersPlace.OnSpotsCalculated += TakeSpot;
+        _homeBase.WorkersPlace.SpotsCalculated += TakeSpot;
     }
 
     private void OnDisable()
     {
-        _homeBase.WorkersPlace.OnSpotsCalculated -= TakeSpot;
+        _homeBase.WorkersPlace.SpotsCalculated -= TakeSpot;
     }
 
     private void Update()

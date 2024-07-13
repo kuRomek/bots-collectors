@@ -8,7 +8,7 @@ public class WorkerMaker : MonoBehaviour
     [SerializeField] private Base _base;
     [SerializeField] private Worker _worker;
 
-    public event Action OnWorkerMade;
+    public event Action WorkerMade;
     
     public int Cost => _makingCost;
 
@@ -22,7 +22,7 @@ public class WorkerMaker : MonoBehaviour
     private void FinishRecruiting()
     {
         _base.ProgressBar.Progressing.onComplete -= FinishRecruiting;
-        OnWorkerMade?.Invoke();
+        WorkerMade?.Invoke();
     }
 
     public Worker Recruit()

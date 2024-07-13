@@ -10,7 +10,7 @@ public class WorkersPlace : MonoBehaviour
     private IEnumerator<Vector3> _spots;
     private SphereCollider _collider;
 
-    public event Action OnSpotsCalculated;
+    public event Action SpotsCalculated;
 
     private void Awake()
     {
@@ -41,7 +41,7 @@ public class WorkersPlace : MonoBehaviour
 
         _spots = spots.GetEnumerator();
 
-        OnSpotsCalculated?.Invoke();
+        SpotsCalculated?.Invoke();
     }
 
     public Vector3 TakeSpot()

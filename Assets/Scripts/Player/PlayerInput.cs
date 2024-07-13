@@ -13,8 +13,6 @@ public class PlayerInput : MonoBehaviour
     private Base _highlightedBase;
     private Base _selectedBase;
 
-    public event Action OnFlagInstalled;
-
     private void Update()
     {
         _ray = _camera.ScreenPointToRay(Input.mousePosition);
@@ -43,7 +41,6 @@ public class PlayerInput : MonoBehaviour
     private void PutFlag()
     {
         _selectedBase.Flag.Install();
-        OnFlagInstalled?.Invoke();
     }
 
     private void ControlSelection(RaycastHit hit)
