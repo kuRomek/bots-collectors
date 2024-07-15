@@ -95,9 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150755f79d696e44bb8084c84c4eefb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minTimeToSpawn: 2.5
-  _maxTimeToSpawn: 5
-  _spawnAcceleration: 0.005
+  _minRandomTimeToSpawn: 2.5
+  _maxRandomTimeToSpawn: 5
+  _spawnAcceleration: 0.0025
   _pool: {fileID: 2472165437917971183}
 --- !u!114 &2472165437917971183
 MonoBehaviour:

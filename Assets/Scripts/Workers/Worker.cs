@@ -10,16 +10,18 @@ public class Worker : MonoBehaviour
     [SerializeField] private AudioPlayer _audio;
     [SerializeField] private IkResourceHandler _ikResourceHandler;
     [SerializeField] private NavMeshAgent _navMeshAgent;
+    [SerializeField] private Transform _resourcePoint;
 
     private Resource _carryingResource;
     private Vector3 _idlePlace;
     private bool _isBuilding = false;
 
+    public static int IsRunning = Animator.StringToHash(nameof(IsRunning));
+
     public event Action<Worker, Resource> OnResourceDelivered;
     public event Action OnBaseBuilding;
 
     protected float DistanceTolerance { get; private set; } = 0.001f;
-    public int IsRunning { get; } = Animator.StringToHash(nameof(IsRunning));
 
     private void Start()
     {
@@ -39,9 +41,16 @@ public class Worker : MonoBehaviour
     private void Update()
     {
         if (Vector3.SqrMagnitude(_navMeshAgent.destination - transform.position) < DistanceTolerance)
+        {
             _animator.SetBool(IsRunning, false);
+        }
         else
+        {
+            if (_carryingResource != null)
+                _carryingResource.transform.SetPositionAndRotation(_resourcePoint.position, _resourcePoint.rotation);
+
             _animator.SetBool(IsRunning, true);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -90,7 +99,7 @@ public class Worker : MonoBehaviour
         _audio.PlayClip(resource.CollectedSoundEffect);
         _carryingResource = resource;
         _ikResourceHandler.GrabResource(_carryingResource);
-        _carryingResource.Carry(this);
+        _carryingResource.Carry();
     }
 
     public void GoForResource(Resource resource)

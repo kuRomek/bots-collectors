@@ -19,16 +19,16 @@ public class WorkerMaker : MonoBehaviour
         _base.ProgressBar.Progressing.onComplete += FinishRecruiting;
     }
 
-    private void FinishRecruiting()
-    {
-        _base.ProgressBar.Progressing.onComplete -= FinishRecruiting;
-        WorkerMade?.Invoke();
-    }
-
     public Worker Recruit()
     {
         Worker worker = Instantiate(_worker, _base.Flag.DefaultPosition + transform.position, Quaternion.identity);
         worker.gameObject.SetActive(true);
         return worker;
+    }
+
+    private void FinishRecruiting()
+    {
+        _base.ProgressBar.Progressing.onComplete -= FinishRecruiting;
+        WorkerMade?.Invoke();
     }
 }

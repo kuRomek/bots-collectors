@@ -9,6 +9,7 @@ public class Flag : MonoBehaviour
     [SerializeField] private LineRenderer _dottedLine;
     [SerializeField] private AudioPlayer _audioGeneral;
     [SerializeField] private AudioClip _installedSoundEffect;
+    [SerializeField] private Base _base;
 
     private float _groundOffset = 0.01f;
 
@@ -21,8 +22,7 @@ public class Flag : MonoBehaviour
     private void Awake()
     {
         DefaultPosition = transform.localPosition;
-        Vector3 basePosition = GetComponentInParent<Base>().transform.position;
-        _dottedLine.SetPosition(0, new Vector3(basePosition.x, _groundOffset, basePosition.z));
+        _dottedLine.SetPosition(0, new Vector3(_base.transform.position.x, _groundOffset, _base.transform.position.z));
     }
 
     private void Start()

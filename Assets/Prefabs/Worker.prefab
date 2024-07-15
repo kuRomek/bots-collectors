@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2288988597005185777}
+  - {fileID: 2118243650222911773}
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -98,12 +99,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed10f7b30600b864487ddfb168d11cde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 2
   _homeBase: {fileID: 0}
+  _constructionSound: {fileID: 0}
   _animator: {fileID: 5270394453282269323}
   _audio: {fileID: 0}
   _ikResourceHandler: {fileID: 1541589627591965092}
-  _navMeshAgent: {fileID: 0}
+  _navMeshAgent: {fileID: 5984580779684262123}
+  _resourcePoint: {fileID: 2118243650222911773}
 --- !u!195 &5984580779684262123
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -126,6 +128,37 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!1 &5169672447489709200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2118243650222911773}
+  m_Layer: 0
+  m_Name: ResourcePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2118243650222911773
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5169672447489709200}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.53, z: 0.15}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5312591061002611715}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1001 &1751520361529513242
 PrefabInstance:
   m_ObjectHideFlags: 0

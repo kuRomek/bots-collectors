@@ -26,6 +26,7 @@ public class Base : MonoBehaviour
     public int WorkerCount => WorkersBehavior.WorkerCount;
     public int WoodCount => ResourceDistributor.WoodCount;
     public bool HasBuilder => BuildingLogic.HasBuilder;
+    public bool IsBuilding => BuildingLogic.IsBuilding;
     public AudioSource AudioSource { get; private set; }
 
     private void Awake()

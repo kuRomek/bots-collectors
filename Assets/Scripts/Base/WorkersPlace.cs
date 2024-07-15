@@ -29,6 +29,11 @@ public class WorkersPlace : MonoBehaviour
         _base.WorkersBehavior.WorkerCountChanged -= CalculateSpots;
     }
 
+    public Vector3 TakeSpot()
+    {
+        return _spots.MoveNext() ? _spots.Current : default;
+    }
+
     private void CalculateSpots()
     {
         Queue<Vector3> spots = new Queue<Vector3>();
@@ -42,10 +47,5 @@ public class WorkersPlace : MonoBehaviour
         _spots = spots.GetEnumerator();
 
         SpotsCalculated?.Invoke();
-    }
-
-    public Vector3 TakeSpot()
-    {
-        return _spots.MoveNext() ? _spots.Current : default;
     }
 }

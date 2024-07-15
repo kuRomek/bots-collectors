@@ -13,6 +13,7 @@ public class BuildingLogic : MonoBehaviour
 
     public Worker Builder => _builder;
     public bool HasBuilder => _builder != null;
+    public bool IsBuilding { get; private set; }
     public int BuildingCost => _buildingCost;
     public float BuildingDuration => _buildingDuration;
 
@@ -40,11 +41,13 @@ public class BuildingLogic : MonoBehaviour
     public void SetBuildingState()
     {
         _base.Model.material = _underConstructionMaterial;
+        IsBuilding = true;
     }
 
     public void SetBuiltState()
     {
         _base.Model.material = _defaultMaterial;
+        IsBuilding = false;
     }
 
     private void RemoveFlag()

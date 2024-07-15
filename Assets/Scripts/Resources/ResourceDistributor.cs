@@ -1,35 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ResourceDistributor : MonoBehaviour
 {
-    private List<ResourceScaner> _scaners = new List<ResourceScaner>();
+    private List<Base> _bases = new List<Base>();
 
-    public void AddScaner(ResourceScaner scaner)
+    private Coroutine _waitingForScaners;
+
+    public void AddBase(Base @base, Resource resource)
     {
-        _scaners.Add(scaner);
+        _bases.Add(@base);
+        _waitingForScaners ??= StartCoroutine(WaitForScaners(resource));
     }
 
-    public void CalculateClosestScaner(Resource resource)
+    private IEnumerator WaitForScaners(Resource resource)
+    {
+        yield return new WaitForFixedUpdate();
+
+        CalculateClosestBase(resource);
+        _waitingForScaners = null;
+    }
+
+    public void CalculateClosestBase(Resource resource)
     {
         float minDistance = float.MaxValue;
         float distance;
 
-        ResourceScaner closestScaner = null;
+        Base closestBase = null;
 
-        foreach (ResourceScaner scaner in _scaners)
+        foreach (Base @base in _bases)
         {
-            distance = Vector3.SqrMagnitude(scaner.transform.position - resource.transform.position);
+            distance = Vector3.SqrMagnitude(@base.transform.position - resource.transform.position);
 
-            if (Vector3.SqrMagnitude(scaner.transform.position - resource.transform.position) < minDistance)
+            if (Vector3.SqrMagnitude(@base.transform.position - resource.transform.position) < minDistance)
             {
                 minDistance = distance;
-                closestScaner = scaner;
+                closestBase = @base;
             }
         }
 
-        closestScaner.GetComponentInParent<Base>().ResourceDistributor.AddResourceToQueue(resource);
+        closestBase.ResourceDistributor.AddResourceToQueue(resource);
 
-        _scaners.Clear();
+        _bases.Clear();
     }
 }

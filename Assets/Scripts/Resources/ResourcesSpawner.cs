@@ -4,11 +4,12 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class ResourcesSpawner : MonoBehaviour
 {
-    [SerializeField] private float _minTimeToSpawn;
-    [SerializeField] private float _maxTimeToSpawn;
+    [SerializeField, Min(0.3f)] private float _minRandomTimeToSpawn;
+    [SerializeField, Min(0.3f)] private float _maxRandomTimeToSpawn;
     [SerializeField] private float _spawnAcceleration;
     [SerializeField] private ResourcePool _pool;
 
+    private float _minTimeToSpawn = 0.3f;
     private Collider _spawnField;
 
     private void Awake()
@@ -23,8 +24,11 @@ public class ResourcesSpawner : MonoBehaviour
 
     private void Update()
     {
-        _minTimeToSpawn -= _spawnAcceleration * Time.deltaTime;
-        _maxTimeToSpawn -= _spawnAcceleration * Time.deltaTime;
+        if (_minRandomTimeToSpawn > _minTimeToSpawn)
+        {
+            _minRandomTimeToSpawn -= _spawnAcceleration * Time.deltaTime;
+            _maxRandomTimeToSpawn -= _spawnAcceleration * Time.deltaTime;
+        }
     }
 
     private IEnumerator BeginSpawning()
@@ -33,7 +37,7 @@ public class ResourcesSpawner : MonoBehaviour
 
         while (isRunning)
         {
-            yield return new WaitForSeconds(Random.Range(_minTimeToSpawn, _maxTimeToSpawn));
+            yield return new WaitForSeconds(Random.Range(_minRandomTimeToSpawn, _maxRandomTimeToSpawn));
 
             Resource resource = _pool.Get();
             Vector3 spawnPoint;
