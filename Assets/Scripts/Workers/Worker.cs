@@ -16,7 +16,7 @@ public class Worker : MonoBehaviour
     private Vector3 _idlePlace;
     private bool _isBuilding = false;
 
-    public static int IsRunning = Animator.StringToHash(nameof(IsRunning));
+    public readonly int IsRunning = Animator.StringToHash(nameof(IsRunning));
 
     public event Action<Worker, Resource> OnResourceDelivered;
     public event Action OnBaseBuilding;
@@ -82,15 +82,11 @@ public class Worker : MonoBehaviour
     {
         if (_isBuilding == false)
         {
-            if (Vector3.SqrMagnitude(_navMeshAgent.destination - _idlePlace) < DistanceTolerance)
-            {
-                _idlePlace = _homeBase.WorkersPlace.TakeSpot();
+            Vector3 oldIdlePlace = _idlePlace;
+            _idlePlace = _homeBase.WorkersPlace.TakeSpot();
+
+            if (Vector3.SqrMagnitude(_navMeshAgent.destination - oldIdlePlace) < DistanceTolerance)
                 _navMeshAgent.SetDestination(_idlePlace);
-            }
-            else
-            {
-                _idlePlace = _homeBase.WorkersPlace.TakeSpot();
-            }
         }
     }
 

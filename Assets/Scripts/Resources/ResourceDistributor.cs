@@ -33,7 +33,7 @@ public class ResourceDistributor : MonoBehaviour
         {
             distance = Vector3.SqrMagnitude(@base.transform.position - resource.transform.position);
 
-            if (Vector3.SqrMagnitude(@base.transform.position - resource.transform.position) < minDistance)
+            if (distance < minDistance)
             {
                 minDistance = distance;
                 closestBase = @base;

@@ -13,7 +13,7 @@ public abstract class Resource : PooledObject
     private Animator _animator;
     private Collider _collider;
 
-    public static int IsStopped = Animator.StringToHash(nameof(IsStopped));
+    public readonly int IsStopped = Animator.StringToHash(nameof(IsStopped));
 
     public event Action<Resource> Delivered;
 
